@@ -4,13 +4,14 @@
 # from django.views.decorators.debug import sensitive_post_parameters
 # from django.utils.decorators import  method_decorator
 # from .models import DeactivateUser
-# from rest_framework.views import  APIView
-# from rest_framework.response import Response
-# from rest_framework import permissions, serializers, status, viewsets
-# from .models import Profile, Address, SMSVerification, DeactivateUser
-# from .serializers import (
-#     ProfileSerializer,
-#     UserSerializer,
+from django.urls import reverse
+from rest_framework.views import  APIView
+from rest_framework.response import Response
+from rest_framework import permissions, serializers, status, viewsets, mixins
+from .models import Profile #, Address SMSVerification, DeactivateUser
+from .serializers import (
+    ProfileSerializer,
+    # UserSerializer,
 #     AddressSerializer,
 #     CreateAddressSerializer,
 #     # SMSVerificationSerializer,
@@ -20,16 +21,17 @@
 #     PasswordChangeSerializer,
 #     UserPermissionSerializer,
 #     NationalIDImageSerializer,
-# )
+)
 
-# from rest_framework.generics import (
-#     ListAPIView,
-#     RetrieveAPIView,
-#     CreateAPIView,
-#     GenericAPIView,
-#     RetrieveUpdateAPIView,
-#     UpdateAPIView
-# )
+
+from rest_framework.generics import (
+    ListAPIView,
+    RetrieveAPIView,
+    CreateAPIView,
+    GenericAPIView,
+    RetrieveUpdateAPIView,
+    UpdateAPIView
+)
 # from rest_auth.views import (
 #     LoginView,
 #     PasswordResetView,
@@ -46,12 +48,16 @@
 # from allauth.account.views import ConfirmEmailView
 # from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
 # from allauth.socialaccount.providers.twitter.views import TwitterOAuthAdapter
-# from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
-# from allauth.socialaccount.providers.oauth2.client import OAuth2Client
-# from rest_auth.registration.views import SocialConnectView, SocialLoginView
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from dj_rest_auth.registration.views import SocialLoginView
 # from rest_auth.social_serializers import TwitterConnectSerializer
 
 # from django.contrib.auth.models import User
+
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 # sensitive_post_parameters_m = method_decorator( #Convert a function decorator into a method decorator
 #     sensitive_post_parameters("password1", "password2")
@@ -141,13 +147,46 @@
 # class VerifySMSAPIView(APIView):
 #     pass
 
-# class ProfileAPIView(APIView):
-#     permission_classes = [permissions.IsAuthenticated]
+class UserIsOwnerOrReadOnly(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return obj.id == request.user.id
 
-#     def get(self, request, pk):
-#         profile = Profile.objects.get(pk=pk)
-#         serializers = ProfileSerializer(profile, context={"request": request})
-#         return Response(serializers.data, status.HTTP_200_OK)
+
+class ProfileViewSet(mixins.ListModelMixin, 
+                    mixins.RetrieveModelMixin, 
+                    mixins.UpdateModelMixin, 
+                    viewsets.GenericViewSet):
+
+    permission_classes = [UserIsOwnerOrReadOnly]
+    # permission_classes = [permissions.AllowAny]
+
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)
+
+
+
+    # def get(self, request): #pk?
+    # #     pk = 6
+    # #     print(pk)
+    #     # profile = Profile.objects.get(pk=pk)
+    #     profile = request.user.profiles
+    #     serializers = ProfileSerializer(profile, context={"request": request})
+    #     return Response(serializers.data, status.HTTP_200_OK)
+
+    # def post(self, request):
+    #     serializer = ProfileSerializer(data=request.data)
+    #     serializer.is_valid(raise_exception=True)
+    #     serializer.save(user=request.user, primary=True)
+    #     return Response(serializer.data, status=status.HTTP_201_CREATED)
     
 # class UserDetailView(RetrieveAPIView):
 #     permission_classes = [permissions.IsAuthenticated]
@@ -167,16 +206,33 @@
 # class FacebookConnectAPIView(SocialLoginView):
 #     adapter_class = FacebookOAuth2Adapter
     
-# class TwitterConnectView(SocialLoginView):
+# class TwitterConnectView(SocialLoginView): 
 #     serializer_class = TwitterConnectSerializer
 #     adapter_class = TwitterOAuthAdapter
 
-# class GoogleLogin(SocialLoginView):
-#     adapter_class = GoogleOAuth2Adapter
-#     client_class = OAuth2Client
-#     callback_url = "https://www.google.com"
+class GoogleLogin(SocialLoginView):
+    # permission_classes = [permissions.AllowAny,]
+    authentication_classes = []
+    adapter_class = GoogleOAuth2Adapter
+    client_class = OAuth2Client
+    # callback_url = "http://127.0.0.1:8000/auth/google/"
+    
+    @property
+    def callback_url(self):
+        # use the same callback url as defined in your GitHub app, this url
+        # must be absolute:
+        return self.request.build_absolute_uri(reverse('googlev_callback')) #http://127.0.0.1:8000/accounts/google/login/callback/
+
+import urllib.parse
+
+from django.shortcuts import redirect
+
+def google_callback(request):
+    params = urllib.parse.urlencode(request.GET)
+    return redirect(f'http://127.0.0.1:8000/auth/google')
 
 
+# http://127.0.0.1:8000/auth/google/url
 
 # class PasswordResetView(APIView):
 #     pass

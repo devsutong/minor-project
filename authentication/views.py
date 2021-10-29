@@ -1,11 +1,19 @@
 from django.shortcuts import render
+from rest_auth.models import TokenModel
 from authentication.serializers import RegisterSerializer, LoginSerializer
 from django.contrib.auth import  authenticate
+
+
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from rest_auth.registration.views import SocialLoginView
+
 
 # Create your views here.
 from rest_framework.generics import GenericAPIView
 from rest_framework import response, status, permissions
-from allauth.account.views import LoginView
+# from allauth.account.views import LoginView
+from rest_auth.views import LoginView
 
 class AuthUserAPIView(GenericAPIView):
     
@@ -47,8 +55,12 @@ class LoginAPIView(GenericAPIView):
         
         return response.Response({'message': "failed"}, status=status.HTTP_401_UNAUTHORIZED)
 
-
-
+# class GoogleLogin(SocialLoginView):
+#     # permission_classes = [permissions.AllowAny,]
+#     authentication_classes = []
+#     adapter_class = GoogleOAuth2Adapter
+#     client_class = OAuth2Client
+#     callback_url = "https://www.google.com"
 
 
 

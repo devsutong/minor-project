@@ -15,16 +15,23 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+# from django.conf.urls import url
+from rest_framework.routers import DefaultRouter
+from user_profile import views
 
+router = DefaultRouter()
 
-
-# from rest_framework.routers import DefaultRouter
-
-# router = DefaultRouter()
+router.register(r'profiles', views.ProfileViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    path('auth/', include('dj_rest_auth.urls')),
+
     # path('', include(router.urls)),
     path('api/auth/', include('authentication.urls')),
     path('accounts/', include('allauth.urls')),
+    path("", include('user_profile.urls')),
+    path('', include(router.urls))
+    
 ]

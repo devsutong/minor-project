@@ -15,7 +15,6 @@ def content_path(filename):
 class Category(MP_Node):
     name = models.CharField(max_length=255, blank=False)
     node_order_by = ['name']
-    #parent added automatically by treebeard
 
     def __str__(self):
         return 'Category: {}'.format(self.name)
