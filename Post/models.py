@@ -9,8 +9,8 @@ import uuid
 
 User  = get_user_model()
 
-def content_path(filename):
-    return 'pdfs/{}'.format(filename)
+def content_path(instance, filename):
+    return 'pdfs/{}/{}/{}'.format(instance.category.get_parent().name, instance.category.name, filename)
 
 class Category(MP_Node):
     name = models.CharField(max_length=255, blank=False)
@@ -41,7 +41,7 @@ class Material(Extensions):
     category = models.ForeignKey(Category, null=True, blank=True, related_name='material_category', on_delete=models.CASCADE)
 
     title = models.CharField(max_length=126, blank=False)
-    content = models.FileField(blank=False, upload_to='pdfs/')
+    content = models.FileField(blank=False, upload_to=content_path)
     vote_up = models.IntegerField(blank=False, default=0)
     vote_down = models.IntegerField(blank=False, default=0)
 
@@ -50,3 +50,4 @@ class Material(Extensions):
 
     def __str__(self):
         return str(self.uuid)
+

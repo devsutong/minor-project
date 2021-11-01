@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from authentication.models import User
 
+from dj_rest_auth.serializers import LoginSerializer as ls
+
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=128, min_length=6, write_only=True)
 
@@ -12,9 +14,10 @@ class RegisterSerializer(serializers.ModelSerializer):
         return User.objects.create_user(**validated_data)
 
 class LoginSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(max_length=128, min_length=6, write_only=True)
+    # email = serializers.EmailField()
+    # password = serializers.CharField()
 
     class Meta:
         model = User
-        fields = ('email', 'password', 'token')
-        read_only_fields = ['token']
+        fields = ('email', 'password')
+        # read_only_fields = ['token']

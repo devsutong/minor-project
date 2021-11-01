@@ -35,8 +35,8 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        # fields = '__all__'
-        exclude = ['id']
+        fields = '__all__'
+        # exclude = ['id']
         # fields = [  
         #             "user", "about", "created", "education_degree", "education_fromdate",
         #             "education_institute","education_specialization","education_todate",

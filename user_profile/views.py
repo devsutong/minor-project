@@ -174,6 +174,29 @@ class ProfileViewSet(mixins.ListModelMixin,
 
 
 
+class MyProfileViewSet(mixins.ListModelMixin,
+                    mixins.RetrieveModelMixin, 
+                    mixins.UpdateModelMixin, 
+                    viewsets.GenericViewSet):
+    
+
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer()
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)
+
+    def list(self, request, *args, **kwargs):
+        user = User.objects.get(pk=request.user.pk)
+        serializer = ProfileSerializer(Profile.objects.get(user=user.pk))
+        return Response(serializer.data)
+
+
+
     # def get(self, request): #pk?
     # #     pk = 6
     # #     print(pk)
@@ -225,7 +248,7 @@ class GoogleLogin(SocialLoginView):
 
 import urllib.parse
 
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 
 def google_callback(request):
     params = urllib.parse.urlencode(request.GET)

@@ -13,7 +13,7 @@ from rest_auth.registration.views import SocialLoginView
 from rest_framework.generics import GenericAPIView
 from rest_framework import response, status, permissions
 # from allauth.account.views import LoginView
-from rest_auth.views import LoginView
+from dj_rest_auth.views import LoginView
 
 class AuthUserAPIView(GenericAPIView):
     
@@ -38,29 +38,21 @@ class RegisterAPIView(GenericAPIView):
         return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class LoginAPIView(GenericAPIView):
-    authentication_classes = []
-
+class LoginAPIView(LoginView):
     serializer_class = LoginSerializer
 
-    def post(self, request):
-        email = request.data.get('email', None)
-        password = request.data.get('password', None)
+    # def post(self, request):
+    #     email = request.data.get('email', None)
+    #     password = request.data.get('password', None)
 
-        user = authenticate(username=email, password=password)
+    #     user = authenticate(username=email, password=password)
 
-        if user:
-            serializer = self.serializer_class(user)
-            return response.Response(serializer.data, status=status.HTTP_200_OK)
+    #     if user:
+    #         serializer = self.serializer_class(user)
+    #         return response.Response(serializer.data, status=status.HTTP_200_OK)
         
-        return response.Response({'message': "failed"}, status=status.HTTP_401_UNAUTHORIZED)
+    #     return response.Response({'message': "failed"}, status=status.HTTP_401_UNAUTHORIZED)
 
-# class GoogleLogin(SocialLoginView):
-#     # permission_classes = [permissions.AllowAny,]
-#     authentication_classes = []
-#     adapter_class = GoogleOAuth2Adapter
-#     client_class = OAuth2Client
-#     callback_url = "https://www.google.com"
 
 
 

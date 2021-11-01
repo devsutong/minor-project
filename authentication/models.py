@@ -91,7 +91,7 @@ class User(PermissionsMixin, AbstractBaseUser, TimeStampedModel):
 
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    # REQUIRED_FIELDS = ['username']
 
     email_verified = models.BooleanField(
         _('verified'),
@@ -101,13 +101,13 @@ class User(PermissionsMixin, AbstractBaseUser, TimeStampedModel):
         ),
     )
 
-    @property
-    def token(self):
-        token = jwt.encode({
-            'username': self.username,
-            'email': self.email,
-            'exp': datetime.utcnow() + timedelta(hours=720)},
-            settings.SECRET_KEY,
-            algorithm = 'HS256',
-        )
-        return token
+    # @property
+    # def token(self):
+    #     token = jwt.encode({
+    #         'username': self.username,
+    #         'email': self.email,
+    #         'exp': datetime.utcnow() + timedelta(hours=720)},
+    #         settings.SECRET_KEY,
+    #         algorithm = 'HS256',
+    #     )
+    #     return token
