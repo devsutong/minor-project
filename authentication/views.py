@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_auth.models import TokenModel
-from authentication.serializers import RegisterSerializer, LoginSerializer
+from authentication.serializers import RegisterSerializer #, LoginSerializer
 from django.contrib.auth import  authenticate
 
 
@@ -15,14 +15,14 @@ from rest_framework import response, status, permissions
 # from allauth.account.views import LoginView
 from dj_rest_auth.views import LoginView
 
-class AuthUserAPIView(GenericAPIView):
+# class AuthUserAPIView(GenericAPIView):
     
-    permission_classes = [permissions.IsAuthenticated]
+#     permission_classes = [permissions.IsAuthenticated]
 
-    def get(self, request):
-        user = request.user
-        serializer = LoginSerializer(user)
-        return response.Response({"user": serializer.data})
+#     def get(self, request):
+#         user = request.user
+#         serializer = LoginSerializer(user)
+#         return response.Response({"user": serializer.data})
 
 class RegisterAPIView(GenericAPIView):
     authentication_classes = []
@@ -38,8 +38,8 @@ class RegisterAPIView(GenericAPIView):
         return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class LoginAPIView(LoginView):
-    serializer_class = LoginSerializer
+# class LoginAPIView(LoginView):
+#     serializer_class = LoginSerializer
 
     # def post(self, request):
     #     email = request.data.get('email', None)

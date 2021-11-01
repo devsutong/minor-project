@@ -4,18 +4,18 @@ from . import views
 from django.urls import path, re_path
 from dj_rest_auth.registration.views import RegisterView, VerifyEmailView, ConfirmEmailView
 
-from .views import LoginAPIView
+# from .views import LoginAPIView
 
 
 urlpatterns = [
     # path('register', views.RegisterAPIView.as_view(), name="register"),
     # path('login', views.LoginAPIView.as_view(), name='login'),
-    path('user', views.AuthUserAPIView.as_view(), name='user'),
+#     path('user', views.AuthUserAPIView.as_view(), name='user'),
     # path('google-login', views.GoogleLogin.as_view(), name='google-login'),
 
     path('account-confirm-email/<str:key>/', ConfirmEmailView.as_view()),
     path('register/', RegisterView.as_view()),
-    path('login/', LoginAPIView.as_view()),
+#     path('login/', LoginAPIView.as_view()),
 #     path('logout/', LogoutViewAPI.as_view()),
 
     path('verify-email/',

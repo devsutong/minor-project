@@ -67,6 +67,9 @@ INSTALLED_APPS = [
     'dj_rest_auth.registration',
 
     #3rd party
+    'drf_yasg',
+
+    #apps
     'minorproject',
     'core',
     'user_profile',

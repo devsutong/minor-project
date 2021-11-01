@@ -13,11 +13,11 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return User.objects.create_user(**validated_data)
 
-class LoginSerializer(serializers.ModelSerializer):
-    # email = serializers.EmailField()
-    # password = serializers.CharField()
+# class LoginSerializer(serializers.ModelSerializer):
+#     # email = serializers.EmailField()
+#     # password = serializers.CharField()
 
-    class Meta:
-        model = User
-        fields = ('email', 'password')
-        # read_only_fields = ['token']
+#     class Meta:
+#         model = User
+#         fields = ('email', 'password')
+#         # read_only_fields = ['token']
