@@ -41,6 +41,7 @@ AUTHENTICATION_BACKENDS = [
 
 #MEEEEEEEEEEEE
 AUTH_USER_MODEL = "authentication.User"
+AUTH_PROFILE_MODULE = "user_profile.Profile"
 
 # Application definition
 
@@ -77,6 +78,7 @@ INSTALLED_APPS = [
     'media',
     'Post',
     'chat',
+    'activities',
 
     
     # MODULE
@@ -200,14 +202,14 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         # 'authentication.jwt.JWTAuthentication',
         # 'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
-        # 'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
 }
 
 # ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
+# ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 # ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 

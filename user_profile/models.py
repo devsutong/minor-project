@@ -18,7 +18,7 @@ class Profile(TimeStampedModel):
         (GENDER_FEMALE, "Female"),
         (OTHER, "Other"),
     )
-    user = models.OneToOneField(User, related_name='profiles', on_delete=models.CASCADE)
+    user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
     points = models.IntegerField(default=0, validators=[
         MinValueValidator(0),
         MaxValueValidator(1000)
