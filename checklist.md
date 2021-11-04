@@ -1,7 +1,7 @@
-[] Registration
-[] Login
-[] My Profile
-[] Search Materials
-[] Upload Materials 
-[] Unlock Material
-[x] Messaging
+- [] Registration
+- [] Login
+- [] My Profile
+- [] Search Materials
+- [] Upload Materials 
+- [] Unlock Material
+- [x] Messaging
