@@ -1,6 +1,6 @@
 from django.urls import reverse
 from rest_framework.response import Response
-from rest_framework import permissions, viewsets, mixins
+from rest_framework import generics, permissions, viewsets, mixins, status
 from .models import Profile
 from .serializers import (
     ProfileSerializer,
@@ -41,27 +41,41 @@ class ProfileViewSet(mixins.ListModelMixin,
 
 
 
-class MyProfileViewSet(mixins.ListModelMixin,
-                    mixins.RetrieveModelMixin, 
-                    mixins.UpdateModelMixin, 
-                    viewsets.GenericViewSet):
+class MyProfileViewSet(
+#                     mixins.ListModelMixin,
+#                     mixins.RetrieveModelMixin, 
+#                     mixins.UpdateModelMixin, 
+#                     viewsets.GenericViewSet,
+                    generics.RetrieveUpdateAPIView
+                    ):
 
     permission_classes = [UserIsOwnerOrReadOnly]
     
     queryset = Profile.objects.all()
-    serializer_class = ProfileSerializer()
 
-    def perform_update(self, serializer):
-        serializer.save()
+    #mixins
+    # serializer_class = ProfileSerializer()
 
-    def partial_update(self, request, *args, **kwargs):
-        kwargs['partial'] = True
-        return self.update(request, *args, **kwargs)
+    # def perform_update(self, serializer):
+    #     serializer.save()
 
-    def list(self, request, *args, **kwargs):
-        user = User.objects.get(pk=request.user.pk)
-        serializer = ProfileSerializer(Profile.objects.get(user=user.pk))
-        return Response(serializer.data)
+    # def partial_update(self, request, *args, **kwargs):
+    #     kwargs['partial'] = True
+    #     return self.update(request, *args, **kwargs)
+
+    # def list(self, request, *args, **kwargs):
+    #     user = User.objects.get(pk=request.user.pk)
+    #     serializer = ProfileSerializer(Profile.objects.get(user=user.pk))
+    #     return Response(serializer.data)
+
+    #generics
+    serializer_class = ProfileSerializer
+    def get_object(self):
+        queryset = self.filter_queryset(self.get_queryset())
+        # make sure to catch 404's below
+        obj = queryset.get(user=self.request.user)
+        # self.check_object_permissions(self.request, obj)
+        return obj
 
 
  
