@@ -60,6 +60,7 @@ urlpatterns = [
     path("", include('user_profile.urls')),
     path('', include(router.urls)),
     path("", include("Post.urls")),
+    path("", include("chat.urls")),
 
     #django-rest-framework-simplejwt.readthedocs.io
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),

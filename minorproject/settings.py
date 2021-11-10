@@ -139,8 +139,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'postgres',
         'USER': 'postgres',
-        'PASSWORD': os.getenv("PASSWORD"),
-        'HOST': '127.0.0.1',
+        'PASSWORD': 'Evamonbha',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
@@ -200,7 +200,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         # 'authentication.jwt.JWTAuthentication',
         # 'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
-        # 'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
 }
@@ -229,8 +229,8 @@ GRAPH_MODELS = {
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_HOST_USER = 'badamonbha123@gmail.com'
+EMAIL_HOST_PASSWORD = 'ebctpkxcuzogkses'
 EMAIL_PORT = 587
 
 
