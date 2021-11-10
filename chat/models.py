@@ -6,7 +6,35 @@ User = get_user_model()
 
 # Create your models here.
 class MessagesManager(models.Manager):
-   pass
+    def inbox_for(self,user):
+    
+    #   Returns all messages that were received by the given user and are not
+    #   marked as deleted.
+        return self.filter(
+            receiver =user,
+            receiver_deleted_at__isnull=True,
+       )
+
+    def outbox_for(self, user):
+    
+    #   Returns all messages that were sent by the given user and are not
+    #   marked as deleted.
+        return self.filter(
+            sender=user,
+            sender_deleted_at__isnull=True,
+        )
+
+    def trash_for(self, user):
+    
+    #   Returns all messages that were either received or sent by the given
+    #   user and are marked as deleted.
+        return self.filter(
+            receiver=user,
+            receiver_deleted_at__isnull=False,
+        ) | self.filter(
+            sender=user,
+            sender_deleted_at__isnull=False,
+      )
 
 
 class Messages(models.Model):
