@@ -6,6 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from django.contrib.auth import get_user_model
 
+from .managers import VoteManager
 User = get_user_model()
 
 class Activity(models.Model):
@@ -28,3 +29,9 @@ class Activity(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.UUIDField(default=uuid.uuid4)
     content_object = GenericForeignKey()
+
+    objects = VoteManager()
+
+
+    class Meta:
+        unique_together = (("user", "content_type", "object_id"),)

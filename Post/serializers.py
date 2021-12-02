@@ -38,16 +38,16 @@ class UploadMaterialSerializer(serializers.ModelSerializer):
         return Material.objects.create(**validated_data)
 
 
-class MaterialDetailSerializer(serializers.ModelSerializer):
-    pass
+class MaterialContentSerializer(serializers.ModelSerializer):
+    class Meta():
+        model = Material
+        fields = ["content"]
 
 
 class MaterialListSerializer(serializers.ModelSerializer):
-
-    owner = serializers.SlugRelatedField(slug_field='username', queryset=User.objects)
+    # owner = serializers.SlugRelatedField(slug_field='username', queryset=User.objects)
     class Meta():
         model = Material
-        
         exclude = [ "content",]
 
 #ref: https://stackoverflow.com/questions/61537923/update-manytomany-relationship-in-django-rest-framework

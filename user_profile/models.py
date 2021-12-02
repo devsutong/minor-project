@@ -9,6 +9,10 @@ from django.db.models.signals import  post_save
 User = get_user_model()
 
 class Profile(TimeStampedModel):
+
+    UPLOAD_POINT = 2
+    UNLOCK_POINT = -5
+
     GENDER_MALE = "Male"
     GENDER_FEMALE = "Female"
     OTHER = "Other"
@@ -27,7 +31,7 @@ class Profile(TimeStampedModel):
     user_avatar = models.ImageField(upload_to="avatar/", blank=True)
     about = models.TextField(max_length=120, blank=True)
 
-    materials_claimed = models.ManyToManyField(Material, related_name='profiles', blank=True)
+    materials_unlocked = models.ManyToManyField(Material, related_name='profiles', blank=True)
     interests = models.ManyToManyField("Interests", related_name = "profiles", blank=True)
     #EDUCATION
     education_institute = models.CharField(max_length=128, blank=True, default="")

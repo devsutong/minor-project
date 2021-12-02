@@ -31,8 +31,8 @@ class Material(Extensions):
     category = models.ForeignKey(Category, null=True, blank=True, related_name='material_category', on_delete=models.CASCADE)
     title = models.CharField(max_length=126, blank=False)
     content = models.FileField(blank=False, upload_to=content_path)
-    vote_up = GenericRelation(Activity, related_query_name="material")
-    vote_down = GenericRelation(Activity,  related_query_name="material")
+    up_vote = GenericRelation(Activity, related_query_name="material")
+    down_vote = GenericRelation(Activity,  related_query_name="material")
     
     class Meta:
         ordering = ['title']

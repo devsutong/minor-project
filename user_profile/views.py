@@ -1,14 +1,17 @@
-from django.urls import reverse
 from rest_framework.response import Response
 from rest_framework import generics, permissions, viewsets, mixins, status
+
+#models
 from .models import Profile
+
+#serializers
+from .serializers import ProfileSerializer
+from Post.serializers import MaterialSerializer
+
 from .serializers import (
     ProfileSerializer,
 )
-
-from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
-from allauth.socialaccount.providers.oauth2.client import OAuth2Client
-from dj_rest_auth.registration.views import SocialLoginView
+from rest_framework.views import APIView
 
 from django.contrib.auth import get_user_model
 
@@ -22,36 +25,20 @@ class UserIsOwnerOrReadOnly(permissions.BasePermission):
         return obj.id == request.user.id
 
 
-class ProfileViewSet(mixins.ListModelMixin, 
-                    # mixins.RetrieveModelMixin, 
-                    # mixins.UpdateModelMixin, 
+class ProfileViewSet(mixins.ListModelMixin,  #returns all profiles on the platform
                     viewsets.GenericViewSet):
 
     permission_classes = [UserIsOwnerOrReadOnly]
-
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
 
-    # def perform_update(self, serializer):
-    #     serializer.save()
 
-    # def partial_update(self, request, *args, **kwargs):
-    #     kwargs['partial'] = True
-    #     return self.update(request, *args, **kwargs)
-
-
-
-class MyProfileViewSet(
-#                     mixins.ListModelMixin,
-#                     mixins.RetrieveModelMixin, 
-#                     mixins.UpdateModelMixin, 
-#                     viewsets.GenericViewSet,
-                    generics.RetrieveUpdateAPIView
-                    ):
+class MyProfileViewSet(generics.RetrieveUpdateAPIView):
 
     permission_classes = [UserIsOwnerOrReadOnly]
     
     queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
 
     #mixins
     # serializer_class = ProfileSerializer()
@@ -69,7 +56,7 @@ class MyProfileViewSet(
     #     return Response(serializer.data)
 
     #generics
-    serializer_class = ProfileSerializer
+    
     def get_object(self):
         queryset = self.filter_queryset(self.get_queryset())
         # make sure to catch 404's below
@@ -78,23 +65,67 @@ class MyProfileViewSet(
         return obj
 
 
- 
-class GoogleLogin(SocialLoginView):
-    authentication_classes = []
-    adapter_class = GoogleOAuth2Adapter
-    client_class = OAuth2Client
-    # callback_url = "http://127.0.0.1:8000/auth/google/"
+class UnlockedMaterialsAPIView(APIView):
+
+    queryset = Profile.objects.all()
     
-    @property
-    def callback_url(self):
-        # use the same callback url as defined in your Google app, this url
-        # must be absolute:
-        return self.request.build_absolute_uri(reverse('googlev_callback')) #http://127.0.0.1:8000/accounts/google/login/callback/
+    def get(self, request, *args, **kwargs):
+        instance = request.user.profile
+        materials_unlocked_queryset = instance.materials_unlocked.all()
+        serializers = MaterialSerializer(materials_unlocked_queryset, many=True)
+        return Response(serializers.data)
 
-import urllib.parse
+    def get_object(self):
+        queryset = self.filter_queryset(self.get_queryset())
+        # make sure to catch 404's below
+        obj = queryset.get(user=self.request.user)
+        self.check_object_permissions(self.request, obj)
+        return obj
 
-from django.shortcuts import get_object_or_404, redirect
 
-def google_callback(request):
-    params = urllib.parse.urlencode(request.GET)
-    return redirect(f'http://127.0.0.1:8000/auth/google')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+# class GoogleLogin(SocialLoginView):
+#     authentication_classes = []
+#     adapter_class = GoogleOAuth2Adapter
+#     client_class = OAuth2Client
+#     # callback_url = "http://127.0.0.1:8000/auth/google/"
+    
+#     @property
+#     def callback_url(self):
+#         # use the same callback url as defined in your Google app, this url
+#         # must be absolute:
+#         return self.request.build_absolute_uri(reverse('googlev_callback')) #http://127.0.0.1:8000/accounts/google/login/callback/
+
+# import urllib.parse
+
+# from django.shortcuts import get_object_or_404, redirect
+
+# def google_callback(request):
+#     params = urllib.parse.urlencode(request.GET)
+#     return redirect(f'http://127.0.0.1:8000/auth/google')

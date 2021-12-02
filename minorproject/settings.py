@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-$x08%w64(_^10l*h192bv5jo*pei4x$)is5kk$t0^abfe+$0-@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["10.0.2.2", "127.0.0.1"]
 
 AUTHENTICATION_BACKENDS = [
 
@@ -42,6 +42,7 @@ AUTHENTICATION_BACKENDS = [
 #MEEEEEEEEEEEE
 AUTH_USER_MODEL = "authentication.User"
 AUTH_PROFILE_MODULE = "user_profile.Profile"
+
 
 # Application definition
 
@@ -60,8 +61,8 @@ INSTALLED_APPS = [
     #django all Auth
     'allauth', 
     'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
+    # 'allauth.socialaccount',
+    # 'allauth.socialaccount.providers.google',
 
     #dj_rest_auth
     'dj_rest_auth',
@@ -213,6 +214,8 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 # ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
+ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
+
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 LOGIN_URL = 'http://localhost:8000/login'
 
@@ -222,6 +225,7 @@ JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_ROOT = 'media/'
 
 GRAPH_MODELS = {
   'all_applications': True,
@@ -234,7 +238,6 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = 587
-
 
 #https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html
 SIMPLE_JWT = {
