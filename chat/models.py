@@ -1,4 +1,7 @@
 from django.db import models
+from django.db.models.fields import CharField
+from django.utils import timezone
+from django.db.models import Q, Case, When, F, Count, Max
 
 from django.contrib.auth import get_user_model
 
@@ -6,7 +9,68 @@ User = get_user_model()
 
 # Create your models here.
 class MessagesManager(models.Manager):
-   pass
+
+    def send_message(self, sender, reciever, message):
+        try:
+            sender = User.objects.get(id=sender)
+            reciever = User.objects.get(id=reciever)
+        except User.DoesNotExist:
+            raise ValueError("User Does not Exist", 400)
+        except Exception:
+            ValueError("Request error", 400)
+        else:
+            if sender == reciever:
+                raise ValueError("Cannot send message to self", 400)
+        message = self.create(sender, reciever, message)
+        return message
+
+    def get_inbox(self, user):
+        message = self.get_queryset().filter(reciever=user).order_by('-pk')
+        return message
+
+    def get_outbox(self, user):
+        message = self.get_queryset().filter(sender=user)
+        return message
+
+    def read_message(self, mes_id):
+        message = self.get_queryset().get(id=mes_id)
+        if not message.read:
+            message.read_datetime = timezone.now()
+        message.save()
+        return message
+
+    def get_chats(self, user):
+        qs =  self.get_queryset().filter(Q(sender=user) | Q(reciever=user)).annotate(
+            user = Case(
+                When(reciever=user, then=F('sender')),
+                When(sender=user, then=F('reciever')),
+                output_field=CharField(),
+            ),
+        ).values('user').annotate(
+            unread_messages=Count( 
+                'pk',
+                filter = Q(reciever=user, read=False),
+            ),
+            last_message_id = Max('pk')
+        ).order_by('-last_message_id')
+
+        return qs
+
+    def get_chat(self, sender_id, reciever_id):
+        self.set_read(sender_id, reciever_id)
+        return self.get_queryset().filter(
+            Q(sender_id=sender_id, reciever_id=reciever_id) |
+            Q(sender_id=reciever_id, reciever_id=sender_id)
+        ).order_by('-pk')
+
+    def get_unread(self, reciever_id):
+        return self.get_queryset().filter(reciever_id=reciever_id, read=False).values("sender")\
+            .annotate(count=Count("pk")).order_by("-count")
+    
+    def set_read(self, reciever_id, sender_id):
+        return self.get_queryset().filter(sender_id=sender_id, reciever_id=reciever_id, read=False)\
+            .update(read_datetime=timezone.now(), read=True)
+
 
 
 class Messages(models.Model):
@@ -50,7 +114,7 @@ class Messages(models.Model):
     )
 
     attachments = models.ManyToManyField(
-        "Attachment", #because model | str
+        "Attachment", #because: model | str
         blank=True
     )
 
@@ -70,6 +134,7 @@ class Messages(models.Model):
                                                  self.receiver.first_name, self.receiver.last_name,
                                                  self.receiver.email,
                                                  self.message[:20])
+
 
 
 class Attachment(models.Model):
