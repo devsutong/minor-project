@@ -63,4 +63,14 @@ class GetChatSerializer(serializers.Serializer):
         }
         return response
 
+class ReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReportedMessages
+        fields = ('datetime', 'message', 'comment')
+
+    def validate(self, attrs):
+        if attrs['message'].receiver != self.context['request'].user:
+            raise ValidationError("You are not receiver of this message")
+        attrs['reporter'] = self.context['request'].user
+        return super().validate(attrs)
         
