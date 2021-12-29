@@ -27,7 +27,8 @@ SECRET_KEY = 'django-insecure-$x08%w64(_^10l*h192bv5jo*pei4x$)is5kk$t0^abfe+$0-@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
+DJANGO_ALLOW_ASYNC_UNSAFE = True
 
 AUTHENTICATION_BACKENDS = [
 
@@ -83,9 +84,12 @@ INSTALLED_APPS = [
     
     # MODULE
     'rest_framework',
-    # 'rest_framework.authtoken',
+    'rest_framework.authtoken',
 
     'treebeard',
+
+    #chat
+    'channels',
 
 
 
@@ -124,6 +128,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'minorproject.wsgi.application'
+ASGI_APPLICATION = "chat.asgi.application"
 
 
 # Database
@@ -142,11 +147,23 @@ DATABASES = {
         'NAME': os.environ.get('POSTGRES_NAME'),
         'USER': os.environ.get('POSTGRES_USER'),
         'PASSWORD': os.environ.get("POSTGRES_PASSWORD"),
-        'HOST': 'db',
+        'HOST': "172.24.112.1",
         'PORT': '5432',
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'postgres',
+#         'USER': 'postgres',
+#         'PASSWORD': os.getenv("PASSWORD"),
+#         # 'HOST': '127.0.0.1',
+#         'HOST': '172.19.112.1',
+#      
+#    'PORT': '5432',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -204,19 +221,43 @@ REST_FRAMEWORK = {
         # 'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ]
+    ],
+    
+    'EXCEPTION_HANDLER': 'chat.exceptions.api_exception_handler',
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination'
 }
+
+# Channels
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [("localhost", 6379)],
+#         },
+#     },
+# }
+
+# development server
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
+
+
+
+
 
 # ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
-# ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+# ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 # ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 LOGIN_URL = 'http://localhost:8000/login'
-
+# 172.19.112.1
 
 JWT_AUTH_COOKIE = 'my-app-auth'
 JWT_AUTH_REFRESH_COOKIE = 'my-refresh-token'
@@ -235,6 +276,10 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_PORT = 587
+
+
+# EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 
 #https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html

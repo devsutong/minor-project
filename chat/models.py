@@ -2,7 +2,6 @@ from django.db import models
 from django.db.models.fields import CharField
 from django.utils import timezone
 from django.db.models import Q, Case, When, F, Count, Max
-
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -10,22 +9,42 @@ User = get_user_model()
 # Create your models here.
 class MessagesManager(models.Manager):
 
-    def send_message(self, sender, reciever, message):
-        try:
-            sender = User.objects.get(id=sender)
-            reciever = User.objects.get(id=reciever)
-        except User.DoesNotExist:
-            raise ValueError("User Does not Exist", 400)
-        except Exception:
-            ValueError("Request error", 400)
-        else:
-            if sender == reciever:
-                raise ValueError("Cannot send message to self", 400)
-        message = self.create(sender, reciever, message)
-        return message
+    # def send_message(self, sender, receiver, message):
+    #     try:
+    #         sender = User.objects.get(id=sender)
+    #         receiver = User.objects.get(id=receiver)
+    #     except User.DoesNotExist:
+    #         raise ValueError("User Does not Exist", 400)
+    #     except Exception:
+    #         ValueError("Request error", 400)
+    #     else:
+    #         if sender == receiver:
+    #             raise ValueError("Cannot send message to self", 400)
+    #     message = self.create(sender, receiver, message)
+    #     return message
+    def send_message(self, **kwargs):
+        if (kwargs.get('sender_id') or kwargs.get('sender')) and (kwargs.get('receiver_id') or kwargs.get('receiver')):
+            try:
+                sender = kwargs.get('sender') or User.objects.get(id=kwargs['sender_id'])
+                receiver = kwargs.get('receiver') or User.objects.get(id=kwargs['receiver_id'])
+                message = kwargs.get('message')
+            except User.DoesNotExist:
+                raise ValueError("User does not exist", 400)
+            except Exception:
+                raise ValueError("Request error", 400)
+            else:
+                if sender == receiver:
+                    raise ValueError("You can't send message to yourself", 400)
 
+            message = self.create(sender=sender, receiver=receiver, message=message)
+            print("Message.send_message: Sent Message")
+            print(message)
+            return message
+        else:
+            print("Message.send_message: Cannot Send Message")
+            return False
     def get_inbox(self, user):
-        message = self.get_queryset().filter(reciever=user).order_by('-pk')
+        message = self.get_queryset().filter(receiver=user).order_by('-pk')
         return message
 
     def get_outbox(self, user):
@@ -40,35 +59,35 @@ class MessagesManager(models.Manager):
         return message
 
     def get_chats(self, user):
-        qs =  self.get_queryset().filter(Q(sender=user) | Q(reciever=user)).annotate(
+        qs =  self.get_queryset().filter(Q(sender=user) | Q(receiver=user)).annotate(
             user = Case(
-                When(reciever=user, then=F('sender')),
-                When(sender=user, then=F('reciever')),
+                When(receiver=user, then=F('sender')),
+                When(sender=user, then=F('receiver')),
                 output_field=CharField(),
             ),
         ).values('user').annotate(
             unread_messages=Count( 
                 'pk',
-                filter = Q(reciever=user, read=False),
+                filter = Q(receiver=user, read=False),
             ),
             last_message_id = Max('pk')
         ).order_by('-last_message_id')
 
         return qs
 
-    def get_chat(self, sender_id, reciever_id):
-        self.set_read(sender_id, reciever_id)
+    def get_chat(self, sender_id, receiver_id):
+        self.set_read(sender_id, receiver_id)
         return self.get_queryset().filter(
-            Q(sender_id=sender_id, reciever_id=reciever_id) |
-            Q(sender_id=reciever_id, reciever_id=sender_id)
+            Q(sender_id=sender_id, receiver_id=receiver_id) |
+            Q(sender_id=receiver_id, receiver_id=sender_id)
         ).order_by('-pk')
 
-    def get_unread(self, reciever_id):
-        return self.get_queryset().filter(reciever_id=reciever_id, read=False).values("sender")\
+    def get_unread(self, receiver_id):
+        return self.get_queryset().filter(receiver_id=receiver_id, read=False).values("sender")\
             .annotate(count=Count("pk")).order_by("-count")
     
-    def set_read(self, reciever_id, sender_id):
-        return self.get_queryset().filter(sender_id=sender_id, reciever_id=reciever_id, read=False)\
+    def set_read(self, receiver_id, sender_id):
+        return self.get_queryset().filter(sender_id=sender_id, receiver_id=receiver_id, read=False)\
             .update(read_datetime=timezone.now(), read=True)
 
 
@@ -215,3 +234,4 @@ class ReportedMessages(models.Model):
 
     def __str__(self):
         return self.message.message
+
