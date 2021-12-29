@@ -1,25 +1,3 @@
-<<<<<<< HEAD
-from django.contrib.auth import get_user_model
-from rest_framework import serializers
-from django.utils.translation import ugettext_lazy as _
-from .models import  Profile
-
-User = get_user_model()
-
-
-class ProfileSerializer(serializers.ModelSerializer):
-    user = serializers.SlugRelatedField(slug_field="username", read_only=True)
-    # gender = serializers.SerializerMethodField()
-    # user_avatar = Base64ImageField()
-
-    def get_gender(self, obj):
-        return obj.get_gender_display() #check https://www.django-rest-framework.org/api-guide/fields/#serializermethodfield
-
-    class Meta:
-        model = Profile
-        fields = '__all__'
-        
-=======
 # from _typeshed import Self
 # from typing_extensions import Required
 from django.contrib.auth import get_user_model, authenticate
@@ -68,4 +46,3 @@ class ProfileSerializer(serializers.ModelSerializer):
     """
     TODO update profile and if phone Number not verified user can't update in his profile.
     """
->>>>>>> chat
