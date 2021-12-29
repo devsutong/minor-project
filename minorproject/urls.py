@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.urls import path, include
-from django.conf.urls import  url
 
 
 from rest_framework_simplejwt.views import (
@@ -12,9 +11,6 @@ from rest_framework_simplejwt.views import (
 from rest_framework import  permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import  openapi
-
-from dj_rest_auth.views import PasswordResetView, PasswordResetConfirmView
-
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -33,14 +29,9 @@ from dj_rest_auth import urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    url(r'^', include('django.contrib.auth.urls')),
 
     #dj_rest_auth
     path('auth/', include('dj_rest_auth.urls')),
-
-    path('password-reset/', PasswordResetView.as_view()),
-        path('password-reset-confirm/<uidb64>/<token>/',
-         PasswordResetConfirmView.as_view(), name='password_reset_confirm'),  
 
     # path('', include(router.urls)),
     path('api/auth/', include('authentication.urls')),
@@ -56,14 +47,7 @@ urlpatterns = [
     #drf-yasg
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-]
 
-from django.conf import settings
-# if settings.DEBUG:
-#     urlpatterns += patterns('',
-#         url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {
-#             'document_root': settings.MEDIA_ROOT,
-#         }),
-# )
-from django.conf.urls.static import  static
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    #chat
+    path('chat/', include('chat.urls')),
+]

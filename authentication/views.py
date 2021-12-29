@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from allauth.account import views
 from allauth.account import urls
 
@@ -145,3 +146,12 @@ from allauth.account import urls
 
 
 # password_reset_from_key = PasswordResetFromKeyView.as_view()
+=======
+from django.shortcuts import render
+from rest_auth.models import TokenModel
+from django.contrib.auth import  authenticate
+
+
+
+
+>>>>>>> chat
