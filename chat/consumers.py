@@ -38,6 +38,7 @@ def get_user(user_id):
         return User.objects.get(id=user_id)
     except User.DoesNotExist:
         return None
+
 @database_sync_to_async
 def verify_user_id(user_id):
     try:
@@ -58,12 +59,10 @@ class SocketConsumer(AsyncJsonWebsocketConsumer):
         super().__init__(*args, **kwargs)
         self.chat = None # of type authenticaion.User
     
-    
     async def connect(self):
         await self.accept()
         await self.connect_user()
         
-
     async def receive_json(self, content, **kwargs):
         command = content.get("command", None)
         try:
@@ -94,7 +93,6 @@ class SocketConsumer(AsyncJsonWebsocketConsumer):
 
     async def disconnect(self, code):
         await self.disconnect_user()
-
     
     async def connect_user(self):
         logger.debug("connecting user")
@@ -190,16 +188,3 @@ class SocketConsumer(AsyncJsonWebsocketConsumer):
             return Messages.objects.get_unread(self.scope["user"].id)
         except:
             print("Cannot get Messages")
-
-
-
-
-                    
-
-
-
-
-
-
-
-

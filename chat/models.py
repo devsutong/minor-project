@@ -6,7 +6,6 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-# Create your models here.
 class MessagesManager(models.Manager):
 
     # def send_message(self, sender, receiver, message):
@@ -90,8 +89,6 @@ class MessagesManager(models.Manager):
         return self.get_queryset().filter(sender_id=sender_id, receiver_id=receiver_id, read=False)\
             .update(read_datetime=timezone.now(), read=True)
 
-
-
 class Messages(models.Model):
     class Meta:
         indexes = [
@@ -154,8 +151,6 @@ class Messages(models.Model):
                                                  self.receiver.email,
                                                  self.message[:20])
 
-
-
 class Attachment(models.Model):
     class Meta:
         verbose_name = "Attachment"
@@ -170,7 +165,6 @@ class Attachment(models.Model):
         User,
         on_delete=models.CASCADE
     )
-
 
 class UserTechInfo(models.Model):
     user = models.OneToOneField(
@@ -188,7 +182,6 @@ class UserTechInfo(models.Model):
     online = models.BooleanField(
         default=False
     )
-
 
 class BlackList(models.Model):
     class Meta:
@@ -209,7 +202,6 @@ class BlackList(models.Model):
 
     def __str__(self):
         return "regex: /%s/" % self.word if self.regex else self.word
-
 
 class ReportedMessages(models.Model):
     message = models.ForeignKey(

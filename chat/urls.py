@@ -15,7 +15,9 @@ urlpatterns = [
     path('attachments/', UploadAttachmentView.as_view({'post': 'create'})),
     path('report/', ReportMessageView.as_view({'post': 'create'})),
     # path('devices/', FCMDeviceAuthorizedViewSet.as_view({'post': 'create'}), name='create_fcm_device')
-    path('', views.index, name='index'),
+
+    # official channels tutorial
+    # path('', views.index, name='index'),
     # path('<str:room_name>/', views.room, name='room'),
 
 ]

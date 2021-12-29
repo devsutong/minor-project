@@ -12,7 +12,6 @@ logger = logging.getLogger(__name__)
 
 @receiver (post_save, sender=Messages)
 def send_message_to_socket(sender, instance, created, **kwargs):
-    # logger.debug("Created: ", created)
     # if created:
     if created and hasattr(instance, 'receiver'):
         channel_layer = get_channel_layer()
