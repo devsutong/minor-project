@@ -141,13 +141,24 @@ ASGI_APPLICATION = "chat.asgi.application"
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql', #_psycopg2
+#         'NAME': os.environ.get('POSTGRES_NAME'),
+#         'USER': os.environ.get('POSTGRES_USER'),
+#         'PASSWORD': os.environ.get("POSTGRES_PASSWORD"),
+#         'HOST': "172.20.96.1", # wsl -- grep nameserver /etc/resolv.conf | awk '{print $2}'
+#         'PORT': '5432',
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql', #_psycopg2
         'NAME': os.environ.get('POSTGRES_NAME'),
         'USER': os.environ.get('POSTGRES_USER'),
         'PASSWORD': os.environ.get("POSTGRES_PASSWORD"),
-        'HOST': "172.24.112.1",
+        'HOST': 'db', # wsl -- grep nameserver /etc/resolv.conf | awk '{print $2}'
         'PORT': '5432',
     }
 }
@@ -237,12 +248,21 @@ REST_FRAMEWORK = {
 #     },
 # }
 
-# development server
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
-    }
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+        },
+    },
 }
+
+# # development server
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels.layers.InMemoryChannelLayer"
+#     }
+# }
 
 
 
