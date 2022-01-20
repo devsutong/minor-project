@@ -13,8 +13,9 @@ from activities.models import Activity
 
 User  = get_user_model()
 
-def content_path(instance, filename):
-    return 'pdfs/{}/{}/{}'.format(instance.category.get_parent().name, instance.category.name, filename)
+def content_path(instance, uuid):
+    return 'pdfs/{}/{}'.format(instance.category.name, uuid)
+    # return 'pdfs/{}/{}/{}'.format(instance.category.get_parent().name, instance.category.name, filename)
 
 class Category(MP_Node):
     name = models.CharField(max_length=255, blank=False)
