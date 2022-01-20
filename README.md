@@ -28,6 +28,18 @@ Installing dependencies
 > pip install -r requirements.txt
 ```
 
+Setup System Environments (Example)
+```colsole
+> export POSTGRES_NAME=poStGRes
+> export POSTGRES_USER=poStGRes
+> export POSTGRES_PASSWORD=eXampleP4ssW0rd
+> export EMAIL_HOST_USER=examplemail@domain.com
+> export EMAIL_HOST_PASSWORD=eXampleP4ssW0rd
+```
+
+Setup Redis, Database and Email Backend in [setting.py](minorproject/settings.py)
+
+
 Migrate Models  
 ```colsole
 > python manage.py makemigrations
