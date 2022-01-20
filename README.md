@@ -30,6 +30,7 @@ Installing dependencies
 
 Migrate Models  
 ```colsole
+> python manage.py makemigrations
 > python manage.py migrate
 ```
 
