@@ -45,7 +45,7 @@ Run the server
 ```
 To view all all available API endpoints
 ```console
-> python3 -m webbrowser http://127.0.0.1:8000/swagger/
+> python -m webbrowser http://127.0.0.1:8000/swagger/
 ```
 <br/>
 
