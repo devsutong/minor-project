@@ -75,7 +75,6 @@ class UploadMatertialView(APIView):
         file_serializer = UploadMaterialSerializer(data=request.data)
         if file_serializer.is_valid():
             file_serializer.save(owner=request.user)
-            
             return Response(file_serializer.data, status.HTTP_201_CREATED)
         else:
             return Response(file_serializer.errors, status.HTTP_400_BAD_REQUEST)
