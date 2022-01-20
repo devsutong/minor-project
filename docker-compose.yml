@@ -8,6 +8,11 @@ services:
       - ./data/db:/var/lib/postgresql/data
     env_file:
       - ./.env
+    ports:
+        - "6543:5432"
+  redis:
+    container_name: redis_con
+    image: "redis:alpine"
   web:
     build: .
     container_name: webapp_con
@@ -20,6 +25,5 @@ services:
       - ./.env
     depends_on:
       - db
-  redis:
-    image: "redis:alpine"
+      - redis
       

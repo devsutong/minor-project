@@ -91,7 +91,7 @@ class User(PermissionsMixin, AbstractBaseUser, TimeStampedModel):
 
     EMAIL_FIELD = 'email'
     USERNAME_FIELD = 'email'
-    # REQUIRED_FIELDS = ['username']
+    REQUIRED_FIELDS = ['username']
 
     email_verified = models.BooleanField(
         _('verified'),

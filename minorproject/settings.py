@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-$x08%w64(_^10l*h192bv5jo*pei4x$)is5kk$t0^abfe+$0-@'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG')
 
 ALLOWED_HOSTS = ["*"]
 DJANGO_ALLOW_ASYNC_UNSAFE = True
@@ -147,22 +147,24 @@ ASGI_APPLICATION = "chat.asgi.application"
 #         'NAME': os.environ.get('POSTGRES_NAME'),
 #         'USER': os.environ.get('POSTGRES_USER'),
 #         'PASSWORD': os.environ.get("POSTGRES_PASSWORD"),
-#         'HOST': "172.20.96.1", # wsl -- grep nameserver /etc/resolv.conf | awk '{print $2}'
+#         'HOST': "192.168.144.1", # wsl -- grep nameserver /etc/resolv.conf | awk '{print $2}'
 #         'PORT': '5432',
 #     }
 # }
 
+#docker
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql', #_psycopg2
         'NAME': os.environ.get('POSTGRES_NAME'),
         'USER': os.environ.get('POSTGRES_USER'),
         'PASSWORD': os.environ.get("POSTGRES_PASSWORD"),
-        'HOST': 'db', # wsl -- grep nameserver /etc/resolv.conf | awk '{print $2}'
+        'HOST': 'db',
         'PORT': '5432',
     }
 }
 
+#windows
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -171,7 +173,7 @@ DATABASES = {
 #         'PASSWORD': os.getenv("PASSWORD"),
 #         # 'HOST': '127.0.0.1',
 #         'HOST': '172.19.112.1',
-#      
+     
 #    'PORT': '5432',
 #     }
 # }
@@ -270,7 +272,7 @@ CHANNEL_LAYERS = {
 
 # ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
+# ACCOUNT_USERNAME_REQUIRED = True
 # ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 # ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
