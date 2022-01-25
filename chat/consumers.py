@@ -110,11 +110,10 @@ class SocketConsumer(AsyncJsonWebsocketConsumer):
         })
 
     async def chat_message(self, event):
-        task_get_user_id = asyncio.create_task(get_user_id(self.chat))
-        user_id = await task_get_user_id
+        # task_get_user_id = asyncio.create_task(get_user_id(self.chat))
+        # user_id = await task_get_user_id
         if event.get('source') == "signals":
-            # logger.debug("consumers.chat_message, event: ",event)
-            if event.get("sender") == "you" or (event.get('reciever') == "you" and user_id == event.get('sender')):
+            if event.get("sender") == "you" or (event.get('reciever') == "you" and self.chat == event.get('sender')):
                 response = {
                     "message": event.get('message'),
                     "receiver": event.get('receiver'),
