@@ -5,12 +5,12 @@ from . import views
 from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 
-router.register(r"my-material", views.MyMaterialViewset, basename="my-material")
-# router.register(r"claim-material", views.ClaimMaterialView, basename="claim-material")
+# router.register("mymaterial", views.MyMaterialViewset, basename="mymaterial")
 
 urlpatterns = [
-    url("upload-material/", views.UploadMatertialView.as_view(), name="upload-material",),
+    url("upload-material/", views.UploadMatertialView.as_view(), name="uploadmaterial",),
     url("materials/", views.MaterialListAPIView.as_view(), name="materials"),
-    url("claim-material/", views.ClaimMaterialView.as_view(), name="claim-material"),
+    url("unlockmaterial/", views.UnlockMaterialView.as_view(), name="unlockmaterial"),
+    path('mymaterial/', views.MyMaterialViewset.as_view()),
     path("", include(router.urls))
 ]   

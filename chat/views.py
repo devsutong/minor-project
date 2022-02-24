@@ -51,15 +51,6 @@ class ReportMessageView(ModelViewSet):
     serializer_class = ReportSerializer
 
 
-
-
-
-
-
-
-
-
-
 from django.shortcuts import render
 
 def index(request):

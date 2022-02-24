@@ -2,10 +2,8 @@ from rest_framework import serializers
 from collections import OrderedDict
 from .models import Attachment
 
-# import the logging library
 import logging
 
-# Get an instance of a logger
 logger = logging.getLogger(__name__)
 
 

@@ -8,9 +8,10 @@ router = routers.DefaultRouter()
 
 
 # router.register(r'my-profile', views.MyProfileViewSet, basename="my-profile")
-router.register(r'profiles', views.ProfileViewSet, basename="profiles")
-
+router.register(r'profiles', views.ProfilesViewSet, basename="profiles")
 urlpatterns = [
     path("", include(router.urls)),
-    url("my-profile", views.MyProfileViewSet.as_view(),)
+    url("my-profile", views.MyProfileViewSet.as_view()),
+    path("profile/<int:pk>/", views.ProfileListView.as_view()),
+    # path('snippets/<int:pk>/', views.SnippetDetail.as_view()
 ]

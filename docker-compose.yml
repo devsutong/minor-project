@@ -16,8 +16,9 @@ services:
   web:
     build: .
     container_name: webapp_con
-    command:  python manage.py runserver 0.0.0.0:8000 #python manage.py runserver 0.0.0.0:8000 #gunicorn --bind 0.0.0.0:8000 myproject.wsgi
+    command:  python manage.py runserver 0.0.0.0:8000 #daphne -b 0.0.0.0 -p 8000 minorproject.asgi:application #python manage.py runserver 0.0.0.0:8000 #gunicorn --bind 0.0.0.0:8000 myproject.wsgi
     volumes:
+      - static:/static
       - .:/app
     ports:
       - "8000:8000"
@@ -26,4 +27,7 @@ services:
     depends_on:
       - db
       - redis
+      
+volumes:
+  static:
       

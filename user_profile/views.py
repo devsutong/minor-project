@@ -1,10 +1,10 @@
+from urllib.error import HTTPError
 from django.urls import reverse
 from rest_framework.response import Response
-from rest_framework import generics, permissions, viewsets, mixins, status
+from rest_framework import generics, permissions, viewsets, mixins
+from rest_framework.views import APIView
 from .models import Profile
-from .serializers import (
-    ProfileSerializer,
-)
+from .serializers import (ProfileSerializer)
 
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
@@ -14,61 +14,24 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-
 class UserIsOwnerOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
         return obj.id == request.user.id
 
-
-class ProfileViewSet(mixins.ListModelMixin, 
-                    # mixins.RetrieveModelMixin, 
-                    # mixins.UpdateModelMixin, 
-                    viewsets.GenericViewSet):
+class ProfilesViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
 
     permission_classes = [UserIsOwnerOrReadOnly]
-
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
 
-    # def perform_update(self, serializer):
-    #     serializer.save()
 
-    # def partial_update(self, request, *args, **kwargs):
-    #     kwargs['partial'] = True
-    #     return self.update(request, *args, **kwargs)
-
-
-
-class MyProfileViewSet(
-#                     mixins.ListModelMixin,
-#                     mixins.RetrieveModelMixin, 
-#                     mixins.UpdateModelMixin, 
-#                     viewsets.GenericViewSet,
-                    generics.RetrieveUpdateAPIView
-                    ):
+class MyProfileViewSet(generics.RetrieveUpdateAPIView):
 
     permission_classes = [UserIsOwnerOrReadOnly]
     
     queryset = Profile.objects.all()
-
-    #mixins
-    # serializer_class = ProfileSerializer()
-
-    # def perform_update(self, serializer):
-    #     serializer.save()
-
-    # def partial_update(self, request, *args, **kwargs):
-    #     kwargs['partial'] = True
-    #     return self.update(request, *args, **kwargs)
-
-    # def list(self, request, *args, **kwargs):
-    #     user = User.objects.get(pk=request.user.pk)
-    #     serializer = ProfileSerializer(Profile.objects.get(user=user.pk))
-    #     return Response(serializer.data)
-
-    #generics
     serializer_class = ProfileSerializer
     def get_object(self):
         queryset = self.filter_queryset(self.get_queryset())
@@ -76,6 +39,31 @@ class MyProfileViewSet(
         obj = queryset.get(user=self.request.user)
         # self.check_object_permissions(self.request, obj)
         return obj
+
+
+
+class ProfileListView(APIView):
+
+    serializer_class = ProfileSerializer
+
+    def get_object(self, pk):
+        try:
+            return Profile.objects.get(user=pk)
+        except Profile.DoesNotExist:
+            raise HTTPError
+    
+    def get(self, request, pk, format=None):
+        profile = self.get_object(pk)
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data)
+
+
+
+
+
+
+
+
 
 
  

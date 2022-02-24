@@ -10,7 +10,6 @@ import jwt
 from django.conf import settings
 from datetime import datetime, timedelta
 
-
 #secondary
 from django.core.validators import MaxValueValidator, MinValueValidator
 
@@ -84,8 +83,6 @@ class User(PermissionsMixin, AbstractBaseUser, TimeStampedModel):
         ),
     )
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
-
-
 
     objects = MyUserManager() # manager class is a class that specifies how objects are created or retrieved
 

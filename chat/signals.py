@@ -12,11 +12,9 @@ logger = logging.getLogger(__name__)
 
 @receiver (post_save, sender=Messages)
 def send_message_to_socket(sender, instance, created, **kwargs):
-    # if created:
     if created and hasattr(instance, 'receiver'):
         channel_layer = get_channel_layer()
         message = instance.message
-        # print("instance.reciever.info.current_channel: ", instance.receiver.info.current_channel)
         if getattr(instance.receiver, "info", None) and instance.receiver.info.current_channel:
             channel_name = instance.receiver.info.current_channel
             print(channel_name)

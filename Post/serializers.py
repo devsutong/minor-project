@@ -3,8 +3,6 @@ from rest_framework import serializers
 from .models import Material
 from user_profile.models import Profile
 from django.contrib.auth import get_user_model
-
-#serpy
 import serpy
 
 
@@ -21,7 +19,6 @@ class MaterialSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Material
-        # fields = ('title', 'owner', 'content', 'subject', 'course')
         fields = '__all__'
 
 
@@ -29,7 +26,6 @@ class MaterialMiniSerializer(serializers.ModelSerializer):
     pass
 
 class UploadMaterialSerializer(serializers.ModelSerializer):
-    # owner = serializers.SlugRelatedField(slug_field='username', queryset=User.objects)
     class Meta():
         model = Material
         exclude = ['owner']
@@ -51,13 +47,7 @@ class MaterialListSerializer(serializers.ModelSerializer):
         exclude = [ "content",]
 
 #ref: https://stackoverflow.com/questions/61537923/update-manytomany-relationship-in-django-rest-framework
-class ClaimsSerializer(serializers.ModelSerializer):
-
-    # def update(self, instance, validated_data):
-    #     material_ids = validated_data.pop('materials_claimed')
-    #     for material_id in material_ids:
-    #         instance.materials_claimed.add(material_id)
-    #     return instance
+class UnlocksSerializer(serializers.ModelSerializer):
 
     class Meta():
         model = Profile

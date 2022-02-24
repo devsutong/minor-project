@@ -10,3 +10,6 @@ __pycache__
 dump.rdb
 .dockerignore
 socket_command.md
+category.pyc
+category.md
+script.py

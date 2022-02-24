@@ -7,20 +7,6 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 class MessagesManager(models.Manager):
-
-    # def send_message(self, sender, receiver, message):
-    #     try:
-    #         sender = User.objects.get(id=sender)
-    #         receiver = User.objects.get(id=receiver)
-    #     except User.DoesNotExist:
-    #         raise ValueError("User Does not Exist", 400)
-    #     except Exception:
-    #         ValueError("Request error", 400)
-    #     else:
-    #         if sender == receiver:
-    #             raise ValueError("Cannot send message to self", 400)
-    #     message = self.create(sender, receiver, message)
-    #     return message
     def send_message(self, **kwargs):
         if (kwargs.get('sender_id') or kwargs.get('sender')) and (kwargs.get('receiver_id') or kwargs.get('receiver')):
             try:
@@ -88,6 +74,7 @@ class MessagesManager(models.Manager):
     def set_read(self, receiver_id, sender_id):
         return self.get_queryset().filter(sender_id=sender_id, receiver_id=receiver_id, read=False)\
             .update(read_datetime=timezone.now(), read=True)
+            
 
 class Messages(models.Model):
     class Meta:
@@ -167,6 +154,10 @@ class Attachment(models.Model):
     )
 
 class UserTechInfo(models.Model):
+
+    class Meta:
+        verbose_name_plural = 'User Tech Infos'
+
     user = models.OneToOneField(
         User,
         related_name="info",
@@ -204,6 +195,10 @@ class BlackList(models.Model):
         return "regex: /%s/" % self.word if self.regex else self.word
 
 class ReportedMessages(models.Model):
+
+    class Meta:
+        verbose_name_plural = 'Reported Messages'
+
     message = models.ForeignKey(
         "Messages",
         on_delete=models.CASCADE

@@ -19,16 +19,8 @@ from .models import  Profile
 
 User = get_user_model()
 
-# class DeactivateUserSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = DeactivateUser
-#         exclude = ["deactive", "user"]
-
-
 class ProfileSerializer(serializers.ModelSerializer):
     user = serializers.SlugRelatedField(slug_field="username", read_only=True)
-    # gender = serializers.SerializerMethodField()
-    # user_avatar = Base64ImageField()
 
     def get_gender(self, obj):
         return obj.get_gender_display() #check https://www.django-rest-framework.org/api-guide/fields/#serializermethodfield
@@ -36,12 +28,6 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = '__all__'
-        # exclude = ['id']
-        # fields = [  
-        #             "user", "about", "created", "education_degree", "education_fromdate",
-        #             "education_institute","education_specialization","education_todate",
-        #             "modified","points"
-        #         ]
 
     """
     TODO update profile and if phone Number not verified user can't update in his profile.

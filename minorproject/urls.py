@@ -34,7 +34,6 @@ urlpatterns = [
     #dj_rest_auth
     path('auth/', include('dj_rest_auth.urls')),
 
-    # path('', include(router.urls)),
     path('api/auth/', include('authentication.urls')),
 
     path('accounts/', include('allauth.urls')),

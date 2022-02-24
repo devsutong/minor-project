@@ -9,6 +9,11 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 class Activity(models.Model):
+
+    class Meta:
+        verbose_name = 'Activity'
+        verbose_name_plural = 'Activities'
+
     FAVORITE = 'F'
     LIKE = 'L'
     UP_VOTE = 'U'

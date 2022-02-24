@@ -57,7 +57,7 @@ class SocketConsumer(AsyncJsonWebsocketConsumer):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.chat = None # of type authenticaion.User
+        self.chat = None # of type authenticaion.User?
     
     async def connect(self):
         await self.accept()
@@ -110,8 +110,6 @@ class SocketConsumer(AsyncJsonWebsocketConsumer):
         })
 
     async def chat_message(self, event):
-        # task_get_user_id = asyncio.create_task(get_user_id(self.chat))
-        # user_id = await task_get_user_id
         if event.get('source') == "signals":
             if event.get("sender") == "you" or (event.get('reciever') == "you" and self.chat == event.get('sender')):
                 response = {
@@ -122,14 +120,6 @@ class SocketConsumer(AsyncJsonWebsocketConsumer):
             elif event.get('receiver') == "you":
                 task_get_new_messages = asyncio.create_task(self.get_new_messages())
                 new_messages = await task_get_new_messages
-                # response = {
-                #     "new_messages": [{
-                #         "sender": message.get('sender'),
-                #         "count": message.get('count')
-
-                #     } for message in new_messages]
-                # }
-                # print(response)
                 response = {
                     "message": event.get('message'),
                     "receiver": event.get('receiver'),
@@ -152,7 +142,6 @@ class SocketConsumer(AsyncJsonWebsocketConsumer):
                 blacklist_validator(message)
                 Messages.objects.send_message(
                     sender=self.scope['user'],
-                    # receiver=User.objects.get(id=self.chat),
                     receiver=self.chat,
                     message=message)
                 logger.debug("from comsumer.send_message: Messages.objects.send_message")

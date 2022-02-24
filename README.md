@@ -2,8 +2,9 @@
 
 > - [x] Registration   
 > - [x] Login  
-> - [x] Profile  
-> - [x] Browse materials   
+> - [x] Create profile  
+> - [x] Browse materials
+> - [x] Browse Users     
 > - [x] Search materials  
 > - [x] Upload materials and earn Unlocks  
 > - [x] Unlock a material  

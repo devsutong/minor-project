@@ -27,7 +27,8 @@ class Profile(TimeStampedModel):
     user_avatar = models.ImageField(upload_to="avatar/", blank=True)
     about = models.TextField(max_length=120, blank=True)
 
-    materials_claimed = models.ManyToManyField(Material, related_name='profiles', blank=True)
+    materials_unlocked = models.ManyToManyField(Material, related_name='profiles', blank=True)
+
     interests = models.ManyToManyField("Interests", related_name = "profiles", blank=True)
     #EDUCATION
     education_institute = models.CharField(max_length=128, blank=True, default="")
