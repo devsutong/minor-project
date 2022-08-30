@@ -1,4 +1,4 @@
-﻿# Minor Project
+﻿# Study Material Sharing Platform
 
 > - [x] Registration   
 > - [x] Login  
