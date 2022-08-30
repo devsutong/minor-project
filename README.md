@@ -1,4 +1,4 @@
-﻿# Minor Project <font size="2">(Under Development)</font>
+﻿# Minor Project
 
 > - [x] Registration   
 > - [x] Login  
